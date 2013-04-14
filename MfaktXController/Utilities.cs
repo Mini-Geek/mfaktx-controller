@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace MfaktXController
@@ -83,6 +84,8 @@ namespace MfaktXController
                     return null;
             }
         }
+
+        public static FontFamily OutputLogFontFamily { get { return new FontFamily(ConfigurationManager.AppSettings["OutputLogFontFamily"]); } }
 
         public static DispatcherOperation BeginInvoke(this Dispatcher dispatcher, Action action)
         {

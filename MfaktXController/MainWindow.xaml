@@ -23,7 +23,7 @@
         </StackPanel>
         <TextBlock Name="StatusTextBlock" Text="{Binding StatusText, StringFormat='Status: {0}'}" Grid.Row="1" HorizontalAlignment="Center" Margin="5" FontSize="18" />
         <CheckBox Name="FreezeCheckBox" Content="Select Mode" Unchecked="FreezeCheckBox_Unchecked" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" ToolTip="Stop updating the output log below, to let you select text without things moving around.  MfaktX will continue to run." />
-        <TextBox Name="OutputTextBox" Grid.Row="2" IsReadOnly="True" TextWrapping="Wrap" FontFamily="Consolas"
+        <TextBox Name="OutputTextBox" Grid.Row="2" IsReadOnly="True" TextWrapping="Wrap"
             ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" />
     </Grid>
 </Window>

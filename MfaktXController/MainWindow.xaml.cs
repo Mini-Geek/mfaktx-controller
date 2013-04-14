@@ -54,6 +54,8 @@ namespace MfaktXController
                 timer.Elapsed += timer_Elapsed;
                 timer.Start();
             }
+
+            OutputTextBox.FontFamily = Utilities.OutputLogFontFamily;
         }
 
         void timer_Elapsed(object sender, ElapsedEventArgs e)
