@@ -43,7 +43,13 @@ namespace MfaktXController
             return ConfigurationManager.AppSettings[keyName];
         }
 
+        public static string MfaktXArguments { get { return ConfigurationManager.AppSettings["MfaktXArguments"]; } }
+
         public static string ExeFile { get { return ConfigurationManager.AppSettings["MfaktXExeFileName"]; } }
+
+        public static string SendCtrlCode { get { return ConfigurationManager.AppSettings["SendCtrlCode"]; } }
+
+        public static int Timeout { get { return int.Parse(ConfigurationManager.AppSettings["Timeout"]); } }
 
         public static bool EnableIdleDetection
         {
@@ -62,6 +68,8 @@ namespace MfaktXController
                     }
             }
         }
+
+        public static double IdleDetectionInterval { get { return double.Parse(ConfigurationManager.AppSettings["IdleDetectionInterval"]); } }
 
         public static DispatcherOperation BeginInvoke(this Dispatcher dispatcher, Action action)
         {

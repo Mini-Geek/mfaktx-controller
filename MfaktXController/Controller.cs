@@ -86,7 +86,7 @@ namespace MfaktXController
                 process.Dispose();
             }
             process = new Process();
-            process.StartInfo = new ProcessStartInfo(Utilities.ExeFile)
+            process.StartInfo = new ProcessStartInfo(Utilities.ExeFile, Utilities.MfaktXArguments)
             {
                 RedirectStandardError = true,
                 RedirectStandardInput = true,
@@ -138,7 +138,16 @@ namespace MfaktXController
         public async Task Stop()
         {
             this.Status = MfaktXStatus.Stopping;
-            process.Kill();
+            var sendCtrlCode = new Process();
+            sendCtrlCode.StartInfo = new ProcessStartInfo(Utilities.SendCtrlCode, process.Id + " 0")
+                {
+                    CreateNoWindow = true,
+                    UseShellExecute = false
+                };
+            sendCtrlCode.Start();
+            bool result = await Task.Run(() => process.WaitForExit(Utilities.Timeout));
+            if (!result)
+                process.Kill();
             await Task.Delay(20);
         }
 

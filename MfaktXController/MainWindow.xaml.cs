@@ -42,7 +42,7 @@ namespace MfaktXController
             if (Utilities.EnableIdleDetection && Utilities.ScreenSaverActive)
             {
                 lastScreenSaverRunning = Utilities.ScreenSaverRunning;
-                var timer = new Timer(15000);
+                var timer = new Timer(Utilities.IdleDetectionInterval);
                 timer.Elapsed += timer_Elapsed;
                 timer.Start();
             }
