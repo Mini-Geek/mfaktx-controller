@@ -27,6 +27,7 @@ namespace MfaktXController
         Controller controller = null;
         Queue<string> messages = new Queue<string>();
         bool lastScreenInactive = false;
+        int linesScroll = 0;
 
         public MainWindow()
         {
@@ -91,14 +92,40 @@ namespace MfaktXController
         {
             Dispatcher.BeginInvoke(() =>
                 {
-                    if (e.Data != null)
+                    bool wasScrolledAtBottom = string.IsNullOrEmpty(OutputTextBox.Text) || (OutputTextBox.VerticalOffset + OutputTextBox.ViewportHeight >= OutputTextBox.ExtentHeight);
+                    double oldVerticalOffset = OutputTextBox.VerticalOffset;
+
+                    if (e != null && e.Data != null)
                     {
                         messages.Enqueue(e.Data);
                         if (messages.Count > Utilities.MaxLines)
+                        {
                             messages.Dequeue();
-                        OutputTextBox.Text = string.Join(Environment.NewLine, messages);
+                            if (!wasScrolledAtBottom)
+                                linesScroll++;
+                        }
                     }
-                    OutputTextBox.ScrollToEnd();
+
+                    if (FreezeCheckBox.IsChecked != true)
+                    {
+                        OutputTextBox.Text = string.Join(Environment.NewLine, messages);
+
+                        if (wasScrolledAtBottom)
+                        {
+                            OutputTextBox.ScrollToEnd();
+                            OutputTextBox.CaretIndex = OutputTextBox.Text.Length;
+                        }
+                        else
+                        {
+                            if (linesScroll > 0) // adjust position by one or more lines to keep the same line visible
+                            {
+                                double lineHeight = OutputTextBox.FontSize * OutputTextBox.FontFamily.LineSpacing;
+                                oldVerticalOffset = Math.Max(0, oldVerticalOffset - lineHeight * linesScroll);
+                                linesScroll = 0;
+                            }
+                            OutputTextBox.ScrollToVerticalOffset(oldVerticalOffset);
+                        }
+                    }
                 });
         }
 
@@ -147,6 +174,11 @@ namespace MfaktXController
         private async void SetSpeed(Speed speed)
         {
             await controller.Start(speed);
+        }
+
+        private void FreezeCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            controller_DataReceived(null, null);
         }
     }
 }

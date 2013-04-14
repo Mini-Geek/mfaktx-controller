@@ -5,11 +5,9 @@ Download binaries (Windows): <a href="https://github.com/Mini-Geek/mfaktx-contro
 http://www.mersenneforum.org/showthread.php?t=18088 has more details.
 
 Known issues:<br />
-If the text box has the full number of lines and you click in the text box so that it has focus, text updates cause the scroll to jump to the top of the box instead of the bottom.  Workaround: focus another element, e.g. by clicking a button.
+None
 
-Possible to-do list:
-<br />
-Improve auto-scrolling on text box
+To-do list:
 <br />
 Use a single ini file for the basic configuration, and simply prepend or append the GPUSieveSize when forming the ini file.
 <br />
