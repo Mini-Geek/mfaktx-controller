@@ -9,6 +9,12 @@ If the text box has the full number of lines and you click in the text box so th
 
 Possible to-do list:
 <br />
+Improve auto-scrolling on text box
+<br />
+Add default startup speed config
+<br />
+Add status to title text
+<br />
 Use a single ini file for the basic configuration, and simply prepend or append the GPUSieveSize when forming the ini file.
 <br />
 (related to above) Allow user to set GPUSieveSize values from controller, either instead of slow/medium/fast or as a way to set which three values you'd like as your slow/medium/fast values
