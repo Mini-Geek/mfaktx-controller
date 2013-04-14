@@ -1,5 +1,7 @@
 mfaktx-controller
 =================
+Client download: <a href="https://github.com/Mini-Geek/mfaktx-controller/blob/master/MfaktXController-win.zip">MfaktXController-win.zip</a>
+
 http://www.mersenneforum.org/showthread.php?t=18088 has more details.
 
 Known issues:<br />
