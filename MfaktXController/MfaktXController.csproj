@@ -81,7 +81,7 @@
   <ItemGroup>
     <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Microsoft.WindowsAPICodePack.dll</HintPath>
+      <HintPath>..\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
     </Reference>
     <Reference Include="PropertyChanged">
       <HintPath>..\packages\PropertyChanged.Fody.1.36.2.3\Lib\NET40\PropertyChanged.dll</HintPath>
@@ -89,7 +89,7 @@
     </Reference>
     <Reference Include="SendCtrlCode, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\SendCtrlCode.exe</HintPath>
+      <HintPath>..\lib\SendCtrlCode.exe</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
