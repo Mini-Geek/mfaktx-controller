@@ -38,8 +38,15 @@ namespace MfaktXController
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            UpdateController();
-            if (Utilities.EnableIdleDetection && Utilities.ScreenSaverActive)
+            controller = Controller.Instance;
+            controller.PropertyChanged += controller_PropertyChanged;
+            controller.DataReceived += controller_DataReceived;
+            this.DataContext = controller;
+            UpdateButtonState();
+            if (Utilities.StartupSpeed != null)
+                SetSpeed(Utilities.StartupSpeed.Value);
+
+            if (Utilities.EnableIdleDetection)
             {
                 lastScreenInactive = Utilities.ScreenInactive;
                 var timer = new Timer(Utilities.IdleDetectionInterval);
@@ -78,16 +85,6 @@ namespace MfaktXController
                 await controller.Stop();
                 this.Close();
             }
-        }
-
-        private void UpdateController()
-        {
-            controller = Controller.Instance;
-            controller.PropertyChanged += controller_PropertyChanged;
-            controller.DataReceived += controller_DataReceived;
-            StatusTextBlock.DataContext = controller;
-            UpdateButtonState();
-            SetSpeed(Speed.Fast);
         }
 
         void controller_DataReceived(object sender, DataReceivedEventArgs e)

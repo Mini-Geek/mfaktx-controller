@@ -72,6 +72,18 @@ namespace MfaktXController
 
         public static double IdleDetectionInterval { get { return double.Parse(ConfigurationManager.AppSettings["IdleDetectionInterval"]); } }
 
+        public static Speed? StartupSpeed
+        {
+            get
+            {
+                Speed result;
+                if (Enum.TryParse<Speed>(ConfigurationManager.AppSettings["StartupSpeed"], true, out result))
+                    return result;
+                else
+                    return null;
+            }
+        }
+
         public static DispatcherOperation BeginInvoke(this Dispatcher dispatcher, Action action)
         {
             return dispatcher.BeginInvoke((Delegate)action);
@@ -82,22 +94,7 @@ namespace MfaktXController
            int uAction, int uParam, ref bool lpvParam,
            int flags);
 
-        private const int SPI_GETSCREENSAVERACTIVE = 16;
         private const int SPI_GETSCREENSAVERRUNNING = 114;
-
-        /// <summary>
-        /// Returns TRUE if the screen saver is active 
-        /// (enabled, but not necessarily running).
-        /// </summary>
-        public static bool ScreenSaverActive
-        {
-            get
-            {
-                bool isActive = false;
-                SystemParametersInfo(SPI_GETSCREENSAVERACTIVE, 0, ref isActive, 0);
-                return isActive;
-            }
-        }
 
         /// <summary>
         /// Returns true if the screen saver is running or the monitor is off due to power settings
