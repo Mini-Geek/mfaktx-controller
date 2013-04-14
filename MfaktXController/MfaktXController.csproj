@@ -79,6 +79,10 @@
     <AssemblyOriginatorKeyFile>MfaktXController_TemporaryKey.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Microsoft.WindowsAPICodePack.dll</HintPath>
+    </Reference>
     <Reference Include="PropertyChanged">
       <HintPath>..\packages\PropertyChanged.Fody.1.36.2.3\Lib\NET40\PropertyChanged.dll</HintPath>
       <Private>False</Private>
@@ -204,6 +208,6 @@
   <PropertyGroup>
     <PostBuildEvent>del /Q $(SolutionDir)MfaktXController-win.zip
 cd $(OutDir)
-"C:\Program Files\7-Zip\7z.exe" a $(SolutionDir)MfaktXController-win.zip MfaktXController.exe MfaktXController.exe.config SendCtrlCode.exe</PostBuildEvent>
+"C:\Program Files\7-Zip\7z.exe" a $(SolutionDir)MfaktXController-win.zip MfaktXController.exe MfaktXController.exe.config SendCtrlCode.exe Microsoft.WindowsAPICodePack.dll</PostBuildEvent>
   </PropertyGroup>
 </Project>

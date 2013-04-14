@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.WindowsAPICodePack.ApplicationServices;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -99,9 +100,20 @@ namespace MfaktXController
         }
 
         /// <summary>
+        /// Returns true if the screen saver is running or the monitor is off due to power settings
+        /// </summary>
+        public static bool ScreenInactive
+        {
+            get
+            {
+                return ScreenSaverRunning || !PowerManager.IsMonitorOn;
+            }
+        }
+
+        /// <summary>
         /// Returns TRUE if the screen saver is actually running
         /// </summary>
-        public static bool ScreenSaverRunning
+        private static bool ScreenSaverRunning
         {
             get
             {

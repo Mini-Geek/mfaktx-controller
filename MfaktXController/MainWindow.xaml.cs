@@ -26,7 +26,7 @@ namespace MfaktXController
     {
         Controller controller = null;
         Queue<string> messages = new Queue<string>();
-        bool lastScreenSaverRunning = false;
+        bool lastScreenInactive = false;
 
         public MainWindow()
         {
@@ -41,7 +41,7 @@ namespace MfaktXController
             UpdateController();
             if (Utilities.EnableIdleDetection && Utilities.ScreenSaverActive)
             {
-                lastScreenSaverRunning = Utilities.ScreenSaverRunning;
+                lastScreenInactive = Utilities.ScreenInactive;
                 var timer = new Timer(Utilities.IdleDetectionInterval);
                 timer.Elapsed += timer_Elapsed;
                 timer.Start();
@@ -50,13 +50,13 @@ namespace MfaktXController
 
         void timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            bool screenSaverRunning = Utilities.ScreenSaverRunning;
-            if (lastScreenSaverRunning != screenSaverRunning)
+            bool screenInactive = Utilities.ScreenInactive;
+            if (lastScreenInactive != screenInactive)
             {
-                lastScreenSaverRunning = screenSaverRunning;
+                lastScreenInactive = screenInactive;
                 if (controller.Status == MfaktXStatus.Running)
                 {
-                    if (screenSaverRunning)
+                    if (screenInactive)
                     {
                         if (controller.CurrentSpeed != Speed.Fast)
                             SetSpeed(Speed.Fast);

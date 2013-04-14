@@ -4,8 +4,6 @@ http://www.mersenneforum.org/showthread.php?t=18088 has more details.
 
 Known issues:<br />
 If the text box has the full number of lines and you click in the text box so that it has focus, text updates cause the scroll to jump to the top of the box instead of the bottom.  Workaround: focus another element, e.g. by clicking a button.
-<br />
-If you use have idle detection enabled and have both a screen saver and the power saving display off feature enabled, when the display goes off, the speed switches from Fast to Medium.  Workaround: disable power saving feature.
 
 Possible to-do list:
 <br />
