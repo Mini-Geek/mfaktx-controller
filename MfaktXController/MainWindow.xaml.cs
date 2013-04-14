@@ -93,7 +93,6 @@ namespace MfaktXController
             Dispatcher.BeginInvoke(() =>
                 {
                     bool wasScrolledAtBottom = string.IsNullOrEmpty(OutputTextBox.Text) || (OutputTextBox.VerticalOffset + OutputTextBox.ViewportHeight >= OutputTextBox.ExtentHeight);
-                    double oldVerticalOffset = OutputTextBox.VerticalOffset;
 
                     if (e != null && e.Data != null)
                     {
@@ -108,6 +107,7 @@ namespace MfaktXController
 
                     if (FreezeCheckBox.IsChecked != true)
                     {
+                        double oldVerticalOffset = OutputTextBox.VerticalOffset;
                         OutputTextBox.Text = string.Join(Environment.NewLine, messages);
 
                         if (wasScrolledAtBottom)
