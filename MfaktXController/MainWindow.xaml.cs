@@ -50,15 +50,22 @@ namespace MfaktXController
             if (Utilities.EnableIdleDetection)
             {
                 lastScreenInactive = Utilities.ScreenInactive;
-                var timer = new Timer(Utilities.IdleDetectionInterval);
-                timer.Elapsed += timer_Elapsed;
-                timer.Start();
+                var idleTimer = new Timer(Utilities.IdleDetectionInterval);
+                idleTimer.Elapsed += idleTimer_Elapsed;
+                idleTimer.Start();
+            }
+
+            if (Utilities.PauseWhileRunning.Any())
+            {
+                var pauseTimer = new Timer(500);
+                pauseTimer.Elapsed += pauseTimer_Elapsed;
+                pauseTimer.Start();
             }
 
             OutputTextBox.FontFamily = Utilities.OutputLogFontFamily;
         }
 
-        void timer_Elapsed(object sender, ElapsedEventArgs e)
+        void idleTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             bool screenInactive = Utilities.ScreenInactive;
             if (lastScreenInactive != screenInactive)
@@ -77,6 +84,21 @@ namespace MfaktXController
                             SetSpeed(Speed.Medium);
                     }
                 }
+            }
+        }
+
+        void pauseTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            bool pause = Utilities.PauseWhileRunning.Any(x => Process.GetProcessesByName(x).Any());
+            if (pause && controller.Status == MfaktXStatus.Running)
+            {
+                controller.Paused = true;
+                controller.Stop().Wait();
+            }
+            else if (!pause && controller.Paused && controller.Status == MfaktXStatus.Stopped)
+            {
+                controller.Paused = false;
+                SetSpeed(controller.CurrentSpeed);
             }
         }
 

@@ -46,6 +46,7 @@ namespace MfaktXController
         public event PropertyChangedEventHandler PropertyChanged;
 #pragma warning restore 67
         public event DataReceivedEventHandler DataReceived;
+        public bool Paused { get; set; }
         public MfaktXStatus Status { get; private set; }
         public Speed CurrentSpeed { get; private set; }
         public string StatusText
@@ -130,9 +131,8 @@ namespace MfaktXController
                 throw new InvalidOperationException("Process is still running");
             var exeFileName = Path.GetFileNameWithoutExtension(Utilities.ExeFile);
             var processes = Process.GetProcessesByName(exeFileName);
-            var running = processes.Count(x => !x.HasExited);
-            if (running >= Utilities.MaxInstances)
-                throw new InvalidOperationException(string.Format("{0} instance(s) of {1} are already running", running, exeFileName));
+            if (processes.Length >= Utilities.MaxInstances)
+                throw new InvalidOperationException(string.Format("{0} instance(s) of {1} are already running", processes.Length, exeFileName));
         }
 
         public async Task Stop()

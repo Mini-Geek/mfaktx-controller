@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -86,6 +87,21 @@ namespace MfaktXController
         }
 
         public static FontFamily OutputLogFontFamily { get { return new FontFamily(ConfigurationManager.AppSettings["OutputLogFontFamily"]); } }
+
+        public static IEnumerable<string> PauseWhileRunning
+        {
+            get
+            {
+                var rawList = ConfigurationManager.AppSettings["PauseWhileRunning"];
+                if (string.IsNullOrEmpty(rawList))
+                    return Enumerable.Empty<string>();
+                else
+                {
+                    var nameList = rawList.Split(',').Select(x => Path.GetFileNameWithoutExtension(x));
+                    return nameList;
+                }
+            }
+        }
 
         public static DispatcherOperation BeginInvoke(this Dispatcher dispatcher, Action action)
         {
