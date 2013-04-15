@@ -169,7 +169,7 @@ namespace MfaktXController
 
         private void UpdateStatus()
         {
-            this.Title = "MfaktX Controller" + Utilities.InstanceIdentifier.WithBeginningSpace() + " - " + controller.StatusText;
+            this.Title = Utilities.InstanceIdentifier.WithEndingSpace() + controller.StatusText + " - MfaktX Controller";
             this.StatusTextBlock.Text = Utilities.InstanceIdentifier.WithEndingSpace() + "Status: " + controller.StatusText;
         }
 
