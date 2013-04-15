@@ -88,6 +88,8 @@ namespace MfaktXController
 
         public static FontFamily OutputLogFontFamily { get { return new FontFamily(ConfigurationManager.AppSettings["OutputLogFontFamily"]); } }
 
+        public static string InstanceIdentifier { get { return ConfigurationManager.AppSettings["InstanceIdentifier"]; } }
+
         public static IEnumerable<string> PauseWhileRunning
         {
             get
@@ -106,6 +108,20 @@ namespace MfaktXController
         public static DispatcherOperation BeginInvoke(this Dispatcher dispatcher, Action action)
         {
             return dispatcher.BeginInvoke((Delegate)action);
+        }
+
+        public static string WithBeginningSpace(this string value)
+        {
+            if (string.IsNullOrEmpty(value))
+                return value;
+            return " " + value;
+        }
+
+        public static string WithEndingSpace(this string value)
+        {
+            if (string.IsNullOrEmpty(value))
+                return value;
+            return value + " ";
         }
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]

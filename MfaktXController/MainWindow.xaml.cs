@@ -113,25 +113,30 @@ namespace MfaktXController
 
         void controller_DataReceived(object sender, DataReceivedEventArgs e)
         {
-            Dispatcher.BeginInvoke(() =>
+            if (Dispatcher.CheckAccess())
+                ReceiveData(e);
+            else
+                Dispatcher.BeginInvoke(() => ReceiveData(e));
+        }
+
+        private void ReceiveData(DataReceivedEventArgs e)
+        {
+            if (e != null && e.Data != null)
+            {
+                messages.Enqueue(e.Data);
+                if (messages.Count > Utilities.MaxLines)
                 {
-                    if (e != null && e.Data != null)
-                    {
-                        messages.Enqueue(e.Data);
-                        if (messages.Count > Utilities.MaxLines)
-                        {
-                            messages.Dequeue();
-                        }
-                    }
+                    messages.Dequeue();
+                }
+            }
 
-                    if (FreezeCheckBox.IsChecked != true)
-                    {
-                        OutputTextBox.Text = string.Join(Environment.NewLine, messages);
+            if (FreezeCheckBox.IsChecked != true)
+            {
+                OutputTextBox.Text = string.Join(Environment.NewLine, messages);
 
-                        OutputTextBox.ScrollToEnd();
-                        OutputTextBox.CaretIndex = OutputTextBox.Text.Length;
-                    }
-                });
+                OutputTextBox.ScrollToEnd();
+                OutputTextBox.CaretIndex = OutputTextBox.Text.Length;
+            }
         }
 
         void controller_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -140,20 +145,32 @@ namespace MfaktXController
             {
                 case "Status":
                 case "CurrentSpeed":
-                    UpdateButtonState();
+                    if (Dispatcher.CheckAccess())
+                        UpdateButtonState();
+                    else
+                        Dispatcher.BeginInvoke(UpdateButtonState);
+                    break;
+                case "StatusText":
+                    if (Dispatcher.CheckAccess())
+                        UpdateStatus();
+                    else
+                        Dispatcher.BeginInvoke(UpdateStatus);
                     break;
             }
         }
 
         private void UpdateButtonState()
         {
-            Dispatcher.BeginInvoke(() =>
-            {
-                StopButton.IsEnabled = controller.Status == MfaktXStatus.Running;
-                SlowButton.IsEnabled = controller.Status != MfaktXStatus.Stopping && (controller.Status != MfaktXStatus.Running || controller.CurrentSpeed != Speed.Slow);
-                MediumButton.IsEnabled = controller.Status != MfaktXStatus.Stopping && (controller.Status != MfaktXStatus.Running || controller.CurrentSpeed != Speed.Medium);
-                FastButton.IsEnabled = controller.Status != MfaktXStatus.Stopping && (controller.Status != MfaktXStatus.Running || controller.CurrentSpeed != Speed.Fast);
-            });
+            StopButton.IsEnabled = controller.Status == MfaktXStatus.Running;
+            SlowButton.IsEnabled = controller.Status != MfaktXStatus.Stopping && (controller.Status != MfaktXStatus.Running || controller.CurrentSpeed != Speed.Slow);
+            MediumButton.IsEnabled = controller.Status != MfaktXStatus.Stopping && (controller.Status != MfaktXStatus.Running || controller.CurrentSpeed != Speed.Medium);
+            FastButton.IsEnabled = controller.Status != MfaktXStatus.Stopping && (controller.Status != MfaktXStatus.Running || controller.CurrentSpeed != Speed.Fast);
+        }
+
+        private void UpdateStatus()
+        {
+            this.Title = "MfaktX Controller" + Utilities.InstanceIdentifier.WithBeginningSpace() + " - " + controller.StatusText;
+            this.StatusTextBlock.Text = Utilities.InstanceIdentifier.WithEndingSpace() + "Status: " + controller.StatusText;
         }
 
         private async void StopButton_Click(object sender , RoutedEventArgs e )
