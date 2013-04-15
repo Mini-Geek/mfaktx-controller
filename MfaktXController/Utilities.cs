@@ -112,16 +112,26 @@ namespace MfaktXController
 
         public static string WithBeginningSpace(this string value)
         {
+            return value.WithBeginning(" ");
+        }
+
+        public static string WithBeginning(this string value, string prefix)
+        {
             if (string.IsNullOrEmpty(value))
                 return value;
-            return " " + value;
+            return prefix + value;
         }
 
         public static string WithEndingSpace(this string value)
         {
+            return value.WithEnding(" ");
+        }
+
+        public static string WithEnding(this string value, string suffix)
+        {
             if (string.IsNullOrEmpty(value))
                 return value;
-            return value + " ";
+            return value + suffix;
         }
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
