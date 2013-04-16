@@ -105,6 +105,63 @@ namespace MfaktXController
             }
         }
 
+        public static IEnumerable<string> SlowWhileRunning
+        {
+            get
+            {
+                var rawList = ConfigurationManager.AppSettings["SlowWhileRunning"];
+                if (string.IsNullOrEmpty(rawList))
+                    return Enumerable.Empty<string>();
+                else
+                {
+                    var nameList = rawList.Split(',').Select(x => Path.GetFileNameWithoutExtension(x));
+                    return nameList;
+                }
+            }
+        }
+
+        public static IDictionary<string, Speed> PauseOrSlowWhileRunning
+        {
+            get
+            {
+                var dict = PauseWhileRunning.ToDictionary(x => x, x => Speed.Stopped);
+                foreach (var value in SlowWhileRunning)
+                {
+                    if (!dict.ContainsKey(value))
+                        dict.Add(value, Speed.Slow);
+                }
+                return dict;
+            }
+        }
+
+        public static JoinComparerProvider<T, TKey> WithComparer<T, TKey>(this IEnumerable<T> inner, IEqualityComparer<TKey> comparer)
+        {
+            return new JoinComparerProvider<T, TKey>(inner, comparer);
+        }
+
+        public sealed class JoinComparerProvider<T, TKey>
+        {
+            internal JoinComparerProvider(IEnumerable<T> inner, IEqualityComparer<TKey> comparer)
+            {
+                Inner = inner;
+                Comparer = comparer;
+            }
+
+            public IEqualityComparer<TKey> Comparer { get; private set; }
+            public IEnumerable<T> Inner { get; private set; }
+        }
+
+        public static IEnumerable<TResult> Join<TOuter, TInner, TKey, TResult>(
+            this IEnumerable<TOuter> outer,
+            JoinComparerProvider<TInner, TKey> inner,
+            Func<TOuter, TKey> outerKeySelector,
+            Func<TInner, TKey> innerKeySelector,
+            Func<TOuter, TInner, TResult> resultSelector)
+        {
+            return outer.Join(inner.Inner, outerKeySelector, innerKeySelector,
+                              resultSelector, inner.Comparer);
+        }
+
         public static DispatcherOperation BeginInvoke(this Dispatcher dispatcher, Action action)
         {
             return dispatcher.BeginInvoke((Delegate)action);

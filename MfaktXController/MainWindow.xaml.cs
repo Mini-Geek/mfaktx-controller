@@ -44,7 +44,7 @@ namespace MfaktXController
             this.DataContext = controller;
             UpdateButtonState();
             if (Utilities.StartupSpeed != null)
-                SetSpeed(Utilities.StartupSpeed.Value);
+                SetSpeed(Utilities.StartupSpeed.Value, false);
 
             if (Utilities.EnableIdleDetection)
             {
@@ -54,11 +54,11 @@ namespace MfaktXController
                 idleTimer.Start();
             }
 
-            if (Utilities.PauseWhileRunning.Any())
+            if (Utilities.PauseOrSlowWhileRunning.Any())
             {
-                var pauseTimer = new Timer(500);
-                pauseTimer.Elapsed += pauseTimer_Elapsed;
-                pauseTimer.Start();
+                var pauseSlowTimer = new Timer(500);
+                pauseSlowTimer.Elapsed += pauseSlowTimer_Elapsed;
+                pauseSlowTimer.Start();
             }
 
             OutputTextBox.FontFamily = Utilities.OutputLogFontFamily;
@@ -75,29 +75,48 @@ namespace MfaktXController
                     if (screenInactive)
                     {
                         if (controller.CurrentSpeed != Speed.Fast)
-                            SetSpeed(Speed.Fast);
+                            SetSpeed(Speed.Fast, false);
                     }
                     else
                     {
                         if (controller.CurrentSpeed == Speed.Fast)
-                            SetSpeed(Speed.Medium);
+                            SetSpeed(Speed.Medium, false);
                     }
                 }
             }
         }
 
-        void pauseTimer_Elapsed(object sender, ElapsedEventArgs e)
+        void pauseSlowTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            bool pause = Utilities.PauseWhileRunning.Any(x => Process.GetProcessesByName(x).Any());
-            if (pause && controller.Status == MfaktXStatus.Running)
+            if (controller.Status != MfaktXStatus.Stopping) // don't try to update when we're already changing - too confusing
             {
-                controller.Paused = true;
-                controller.Stop().Wait();
-            }
-            else if (!pause && controller.Paused && controller.Status == MfaktXStatus.Stopped)
-            {
-                controller.Paused = false;
-                SetSpeed(controller.CurrentSpeed);
+                Reduce reduce = new Reduce(Utilities.PauseOrSlowWhileRunning);
+                if (reduce.ReduceSpeed < controller.CurrentSpeed)
+                {
+                    if (reduce.IsEnabled)
+                    {
+                        if (controller.Reduced == null || controller.Reduced.ReduceSpeed != reduce.ReduceSpeed)
+                        {
+                            if (controller.CurrentSpeed != reduce.ReduceSpeed)
+                            {
+                                if (controller.Reduced == null)
+                                    controller.ReducedFrom = controller.CurrentSpeed;
+                                controller.Reduced = reduce;
+                                controller.Start(reduce.ReduceSpeed, false).Wait();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (controller.Reduced != null)
+                        {
+                            controller.Reduced = null;
+                            var reducedFrom = controller.ReducedFrom.Value;
+                            controller.ReducedFrom = null;
+                            controller.Start(reducedFrom, false).Wait();
+                        }
+                    }
+                }
             }
         }
 
@@ -106,7 +125,7 @@ namespace MfaktXController
             if (controller != null && controller.Status != MfaktXStatus.Stopped)
             {
                 e.Cancel = true;
-                await controller.Stop();
+                await controller.Stop(true);
                 this.Close();
             }
         }
@@ -173,29 +192,29 @@ namespace MfaktXController
             this.StatusTextBlock.Text = Utilities.InstanceIdentifier.WithEndingSpace() + "Status: " + controller.StatusText;
         }
 
-        private async void StopButton_Click(object sender , RoutedEventArgs e )
+        private async void StopButton_Click(object sender, RoutedEventArgs e)
         {
-            await controller.Stop();
+            await controller.Stop(true);
         }
 
         private void SlowButton_Click(object sender, RoutedEventArgs e)
         {
-            SetSpeed(Speed.Slow);
+            SetSpeed(Speed.Slow, true);
         }
 
         private void MediumButton_Click(object sender, RoutedEventArgs e)
         {
-            SetSpeed(Speed.Medium);
+            SetSpeed(Speed.Medium, true);
         }
 
         private void FastButton_Click(object sender, RoutedEventArgs e)
         {
-            SetSpeed(Speed.Fast);
+            SetSpeed(Speed.Fast, true);
         }
 
-        private async void SetSpeed(Speed speed)
+        private async void SetSpeed(Speed speed, bool manual)
         {
-            await controller.Start(speed);
+            await controller.Start(speed, manual);
         }
 
         private void FreezeCheckBox_Unchecked(object sender, RoutedEventArgs e)

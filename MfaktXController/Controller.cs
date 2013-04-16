@@ -21,6 +21,7 @@ namespace MfaktXController
     enum Speed
     {
         Unknown,
+        Stopped,
         Slow,
         Medium,
         Fast
@@ -46,7 +47,8 @@ namespace MfaktXController
         public event PropertyChangedEventHandler PropertyChanged;
 #pragma warning restore 67
         public event DataReceivedEventHandler DataReceived;
-        public bool Paused { get; set; }
+        public Reduce Reduced { get; set; }
+        public Speed? ReducedFrom { get; set; }
         public MfaktXStatus Status { get; private set; }
         public Speed CurrentSpeed { get; private set; }
         public string StatusText
@@ -71,12 +73,27 @@ namespace MfaktXController
         {
         }
 
-        public async Task Start(Speed speed)
+        public async Task Start(Speed speed, bool manual)
         {
+            if (speed == Speed.Stopped)
+            {
+                await Stop(manual);
+                return;
+            }
+            if (speed != Speed.Fast && speed != Speed.Medium && speed != Speed.Slow)
+                throw new ArgumentException("Speed must be Slow, Medium, Fast, or Stopped", "speed");
+
+            if (manual)
+            {
+                this.Reduced = null;
+                this.ReducedFrom = null;
+            }
+
             if (this.Status == MfaktXStatus.Running)
             {
-                await Stop();
+                await Stop(manual);
             }
+
             File.Copy(Utilities.IniFile(speed), Utilities.IniFile(null), true);
             this.CurrentSpeed = speed;
 
@@ -135,9 +152,14 @@ namespace MfaktXController
                 throw new InvalidOperationException(string.Format("{0} instance(s) of {1} are already running", processes.Length, exeFileName));
         }
 
-        public async Task Stop()
+        public async Task Stop(bool manual)
         {
             this.Status = MfaktXStatus.Stopping;
+            if (manual)
+            {
+                this.Reduced = null;
+                this.ReducedFrom = null;
+            }
             var sendCtrlCode = new Process();
             sendCtrlCode.StartInfo = new ProcessStartInfo(Utilities.SendCtrlCode, process.Id + " 0")
                 {
@@ -154,6 +176,7 @@ namespace MfaktXController
         void process_Exited(object sender, EventArgs e)
         {
             this.Status = MfaktXStatus.Stopped;
+            this.CurrentSpeed = Speed.Stopped;
         }
     }
 }
