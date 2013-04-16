@@ -72,7 +72,9 @@ namespace MfaktXController
             }
         }
 
-        public static double IdleDetectionInterval { get { return double.Parse(ConfigurationManager.AppSettings["IdleDetectionInterval"]); } }
+        public static double IdleDetectionInterval { get { return 500; } }
+
+        public static double PauseSlowDetectionInterval { get { return double.Parse(ConfigurationManager.AppSettings["PauseSlowDetectionInterval"]); } }
 
         public static Speed? StartupSpeed
         {

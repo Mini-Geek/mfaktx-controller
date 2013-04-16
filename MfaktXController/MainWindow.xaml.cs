@@ -56,7 +56,7 @@ namespace MfaktXController
 
             if (Utilities.PauseOrSlowWhileRunning.Any())
             {
-                var pauseSlowTimer = new Timer(500);
+                var pauseSlowTimer = new Timer(Utilities.PauseSlowDetectionInterval);
                 pauseSlowTimer.Elapsed += pauseSlowTimer_Elapsed;
                 pauseSlowTimer.Start();
             }
