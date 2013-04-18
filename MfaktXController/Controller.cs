@@ -95,11 +95,11 @@ namespace MfaktXController
             }
 
             File.Copy(Utilities.IniFile(speed), Utilities.IniFile(null), true);
-            this.CurrentSpeed = speed;
 
             ValidateStartNewInstance();
             if (process != null)
             {
+                process.Exited -= process_Exited;
                 process.Close();
                 process.Dispose();
             }
@@ -123,6 +123,7 @@ namespace MfaktXController
             process.BeginOutputReadLine();
 
             this.Status = MfaktXStatus.Running;
+            this.CurrentSpeed = speed;
         }
 
         void process_ErrorDataReceived(object sender, DataReceivedEventArgs e)
