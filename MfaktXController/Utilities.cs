@@ -82,9 +82,15 @@ namespace MfaktXController
             {
                 Speed result;
                 if (Enum.TryParse<Speed>(ConfigurationManager.AppSettings["StartupSpeed"], true, out result))
-                    return result;
-                else
-                    return null;
+                    switch (result)
+                    {
+                        case Speed.Slow:
+                        case Speed.Medium:
+                        case Speed.Fast:
+                            return result;
+                    }
+
+                return null;
             }
         }
 

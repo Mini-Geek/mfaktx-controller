@@ -155,6 +155,8 @@ namespace MfaktXController
 
         public async Task Stop(bool manual)
         {
+            if (process == null)
+                return;
             this.Status = MfaktXStatus.Stopping;
             if (manual)
             {
