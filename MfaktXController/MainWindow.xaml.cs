@@ -70,16 +70,17 @@ namespace MfaktXController
             if (lastScreenInactive != screenInactive)
             {
                 lastScreenInactive = screenInactive;
-                if (controller.Status == MfaktXStatus.Running)
+                if (controller.Status == MfaktXStatus.Running || controller.Status == MfaktXStatus.Stopping)
                 {
+                    var currSpeed = controller.SwitchingToSpeed ?? controller.CurrentSpeed;
                     if (screenInactive)
                     {
-                        if (controller.CurrentSpeed != Speed.Fast)
+                        if (currSpeed != Speed.Fast)
                             SetSpeed(Speed.Fast, false);
                     }
                     else
                     {
-                        if (controller.CurrentSpeed == Speed.Fast)
+                        if (currSpeed == Speed.Fast)
                             SetSpeed(Speed.Medium, false);
                     }
                 }
@@ -214,6 +215,8 @@ namespace MfaktXController
 
         private async void SetSpeed(Speed speed, bool manual)
         {
+            if (controller.StopTask != null)
+                await controller.StopTask;
             await controller.Start(speed, manual);
         }
 

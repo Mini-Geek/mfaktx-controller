@@ -51,6 +51,8 @@ namespace MfaktXController
         public Speed? ReducedFrom { get; set; }
         public MfaktXStatus Status { get; private set; }
         public Speed CurrentSpeed { get; private set; }
+        public Speed? SwitchingToSpeed { get; private set; }
+        public Task StopTask { get; private set; }
         public string StatusText
         {
             get
@@ -89,6 +91,8 @@ namespace MfaktXController
                 this.ReducedFrom = null;
             }
 
+            this.SwitchingToSpeed = speed;
+
             if (this.Status == MfaktXStatus.Running)
             {
                 await Stop(manual);
@@ -124,6 +128,7 @@ namespace MfaktXController
 
             this.Status = MfaktXStatus.Running;
             this.CurrentSpeed = speed;
+            this.SwitchingToSpeed = null;
         }
 
         void process_ErrorDataReceived(object sender, DataReceivedEventArgs e)
@@ -155,6 +160,13 @@ namespace MfaktXController
 
         public async Task Stop(bool manual)
         {
+            this.StopTask = _stop(manual);
+            await this.StopTask;
+            this.StopTask = null;
+        }
+
+        private async Task _stop(bool manual)
+        {
             if (process == null)
                 return;
             this.Status = MfaktXStatus.Stopping;
@@ -165,10 +177,10 @@ namespace MfaktXController
             }
             var sendCtrlCode = new Process();
             sendCtrlCode.StartInfo = new ProcessStartInfo(Utilities.SendCtrlCode, process.Id + " 0")
-                {
-                    CreateNoWindow = true,
-                    UseShellExecute = false
-                };
+            {
+                CreateNoWindow = true,
+                UseShellExecute = false
+            };
             sendCtrlCode.Start();
             bool result = await Task.Run(() => process.WaitForExit(Utilities.Timeout));
             if (!result)
