@@ -7,7 +7,8 @@ http://www.mersenneforum.org/showthread.php?t=18088 has more details.
 Building instructions:
  - I used Visual Studio 2012 Express for Windows Desktop. Anything that supports building .NET 4.5 Windows Applications should work.
  - Dependencies:
-  - https://nuget.org/packages/Fody/
-  - https://nuget.org/packages/PropertyChanged.Fody
-  - 7-Zip, installed at "C:\Program Files\7-Zip\7z.exe" (not strictly necessary, part of the default post-build event)
+  - <a href="http://visualstudiogallery.msdn.microsoft.com/27077b70-9dad-4c64-adcf-c7cf6bc9970c">NuGet</a>, if not already installed
+  - <a href="https://nuget.org/packages/Fody/">Fody</a>
+  - <a href="https://nuget.org/packages/PropertyChanged.Fody">PropertyChanged.Fody</a>
+  - <a href="http://www.7-zip.org/download.html">7-Zip</a>, installed at "C:\Program Files\7-Zip\7z.exe" (not strictly necessary, part of the default post-build event)
  - If you contribute a new build, you should build with the Release configuration to automatically update the binaries zip. (it automatically updates every time you build, not just on Release, so try not to check in a Debug build)
