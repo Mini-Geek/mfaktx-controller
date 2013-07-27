@@ -48,7 +48,7 @@ namespace MfaktXController
 
             if (Utilities.EnableIdleDetection)
             {
-                lastScreenInactive = Utilities.ScreenInactive;
+                lastScreenInactive = Utilities.IsScreenInactiveAfterDelay();
                 var idleTimer = new Timer(Utilities.IdleDetectionInterval);
                 idleTimer.Elapsed += idleTimer_Elapsed;
                 idleTimer.Start();
@@ -66,7 +66,7 @@ namespace MfaktXController
 
         void idleTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            bool screenInactive = Utilities.ScreenInactive;
+            bool screenInactive = Utilities.IsScreenInactiveAfterDelay();
             if (lastScreenInactive != screenInactive)
             {
                 lastScreenInactive = screenInactive;

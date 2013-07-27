@@ -72,6 +72,8 @@ namespace MfaktXController
             }
         }
 
+        public static double IdleDelayInterval { get { return double.Parse(ConfigurationManager.AppSettings["IdleDelayInterval"]); } }
+
         public static double IdleDetectionInterval { get { return 500; } }
 
         public static double PauseSlowDetectionInterval { get { return double.Parse(ConfigurationManager.AppSettings["PauseSlowDetectionInterval"]); } }
@@ -209,7 +211,7 @@ namespace MfaktXController
         /// <summary>
         /// Returns true if the screen saver is running or the monitor is off due to power settings
         /// </summary>
-        public static bool ScreenInactive
+        private static bool ScreenInactive
         {
             get
             {
@@ -229,5 +231,27 @@ namespace MfaktXController
                 return isRunning;
             }
         }
+
+        /// <summary>
+        /// Returns true after a delay if the screen saver is running or the monitor is off due to power settings
+        /// </summary>
+        public static bool IsScreenInactiveAfterDelay()
+        {
+            if (Utilities.IdleDelayInterval <= 0)
+                return ScreenInactive;
+            if (!ScreenInactive)
+            {
+                currentInactiveStartTime = null;
+                return false;
+            }
+            if (currentInactiveStartTime == null)
+            {
+                currentInactiveStartTime = DateTime.Now;
+                return false;
+            }
+            return (DateTime.Now - currentInactiveStartTime.Value).TotalMilliseconds > Utilities.IdleDelayInterval;
+        }
+
+        private static DateTime? currentInactiveStartTime;
     }
 }
