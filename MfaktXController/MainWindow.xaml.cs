@@ -224,5 +224,15 @@ namespace MfaktXController
         {
             controller_DataReceived(null, null);
         }
+
+        private void PauseWhileRunningButton_Click(object sender, RoutedEventArgs e)
+        {
+            new ManageProcessListWindow(false).Show();
+        }
+
+        private void SlowWhileRunningButton_Click(object sender, RoutedEventArgs e)
+        {
+            new ManageProcessListWindow(true).Show();
+        }
     }
 }

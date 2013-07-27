@@ -16,10 +16,16 @@
                     <Setter Property="Margin" Value="5" />
                 </Style>
             </StackPanel.Resources>
-            <Button Name="StopButton" Content="Stop" Click="StopButton_Click" />
-            <Button Name="SlowButton" Content="Slow" Click="SlowButton_Click" />
-            <Button Name="MediumButton" Content="Medium" Click="MediumButton_Click" />
-            <Button Name="FastButton" Content="Fast" Click="FastButton_Click" />
+            <StackPanel>
+                <Button Name="StopButton" Content="Stop" Click="StopButton_Click" />
+                <Button Name="PauseWhileRunningButton" Content="Pause While&#xa;Running..." FontSize="11" Click="PauseWhileRunningButton_Click" />
+            </StackPanel>
+            <StackPanel>
+                <Button Name="SlowButton" Content="Slow" Click="SlowButton_Click" />
+                <Button Name="SlowWhileRunningButton" Content="Slow While&#xa;Running..." FontSize="11" Click="SlowWhileRunningButton_Click" />
+            </StackPanel>
+            <Button Name="MediumButton" Content="Medium" Click="MediumButton_Click" VerticalAlignment="Top" />
+            <Button Name="FastButton" Content="Fast" Click="FastButton_Click" VerticalAlignment="Top" />
         </StackPanel>
         <TextBlock Name="StatusTextBlock" Grid.Row="1" HorizontalAlignment="Center" Margin="5" FontSize="18" />
         <CheckBox Name="FreezeCheckBox" Content="Select Mode" Unchecked="FreezeCheckBox_Unchecked" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" ToolTip="Stop updating the output log below, to let you select text without things moving around.  MfaktX will continue to run." />
