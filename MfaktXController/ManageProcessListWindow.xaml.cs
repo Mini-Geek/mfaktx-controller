@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Configuration;
 using System.Linq;
 using System.Reflection;
@@ -23,8 +24,9 @@ namespace MfaktXController
     /// </summary>
     public partial class ManageProcessListWindow : Window
     {
-        ObservableCollection<string> processes = null;
+        readonly ObservableCollection<string> processes = null;
         bool isSlow;
+        bool isDirty;
 
         public ManageProcessListWindow(bool isSlow)
         {
@@ -32,11 +34,31 @@ namespace MfaktXController
 
             this.isSlow = isSlow;
             this.processes = new ObservableCollection<string>(isSlow ? Utilities.SlowWhileRunning : Utilities.PauseWhileRunning);
+            this.processes.CollectionChanged += (s, e) => isDirty = true;
             this.ProcessDataGrid.ItemsSource = processes;
             this.Title = "Manage " + (isSlow ? "Slow" : "Pause") + " While Running List - MfaktX Controller";
+            this.Closing += ManageProcessListWindow_Closing;
+        }
+
+        void ManageProcessListWindow_Closing(object sender, CancelEventArgs e)
+        {
+            if (isDirty)
+            {
+                var result = MessageBox.Show("You have unsaved changes. Would you like to save these changes?", "Unsaved Changes", MessageBoxButton.YesNoCancel);
+                if (result == MessageBoxResult.Yes)
+                    Save();
+                else if (result == MessageBoxResult.Cancel)
+                    e.Cancel = true;
+            }
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            Save();
+            this.Close();
+        }
+
+        private void Save()
         {
             string settingName = isSlow ? "SlowWhileRunning" : "PauseWhileRunning";
             string newValue = string.Join(",", this.processes);
@@ -50,11 +72,12 @@ namespace MfaktXController
             xdoc.Save(config.FilePath);
 
             ConfigurationManager.RefreshSection("appSettings");
-            this.Close();
+            isDirty = false;
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
+            isDirty = false;
             this.Close();
         }
 
