@@ -185,6 +185,7 @@ namespace MfaktXController
             SlowButton.IsEnabled = controller.Status != MfaktXStatus.Stopping && (controller.Status != MfaktXStatus.Running || controller.CurrentSpeed != Speed.Slow);
             MediumButton.IsEnabled = controller.Status != MfaktXStatus.Stopping && (controller.Status != MfaktXStatus.Running || controller.CurrentSpeed != Speed.Medium);
             FastButton.IsEnabled = controller.Status != MfaktXStatus.Stopping && (controller.Status != MfaktXStatus.Running || controller.CurrentSpeed != Speed.Fast);
+            StopImmediatelyButton.Visibility = controller.Status == MfaktXStatus.Stopping ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void UpdateStatus()
@@ -233,6 +234,11 @@ namespace MfaktXController
         private void SlowWhileRunningButton_Click(object sender, RoutedEventArgs e)
         {
             new ManageProcessListWindow(true).Show();
+        }
+
+        private void StopImmediatelyButton_Click(object sender, RoutedEventArgs e)
+        {
+            controller.StopImmediately();
         }
     }
 }

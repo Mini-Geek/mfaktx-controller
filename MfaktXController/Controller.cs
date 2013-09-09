@@ -188,6 +188,12 @@ namespace MfaktXController
             await Task.Delay(20);
         }
 
+        public void StopImmediately()
+        {
+            if (process != null)
+                process.Kill();
+        }
+
         void process_Exited(object sender, EventArgs e)
         {
             this.Status = MfaktXStatus.Stopped;

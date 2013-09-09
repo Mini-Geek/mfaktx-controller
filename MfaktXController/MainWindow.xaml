@@ -27,7 +27,10 @@
             <Button Name="MediumButton" Content="Medium" Click="MediumButton_Click" VerticalAlignment="Top" />
             <Button Name="FastButton" Content="Fast" Click="FastButton_Click" VerticalAlignment="Top" />
         </StackPanel>
-        <TextBlock Name="StatusTextBlock" Grid.Row="1" HorizontalAlignment="Center" Margin="5" FontSize="18" />
+        <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
+            <TextBlock Name="StatusTextBlock" Margin="5" FontSize="18" />
+            <Button Name="StopImmediatelyButton" Margin="5" Content="Force Close Now" Click="StopImmediatelyButton_Click" />
+        </StackPanel>
         <CheckBox Name="FreezeCheckBox" Content="Select Mode" Unchecked="FreezeCheckBox_Unchecked" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" ToolTip="Stop updating the output log below, to let you select text without things moving around.  MfaktX will continue to run." />
         <TextBox Name="OutputTextBox" Grid.Row="2" IsReadOnly="True" TextWrapping="Wrap"
             ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" />
