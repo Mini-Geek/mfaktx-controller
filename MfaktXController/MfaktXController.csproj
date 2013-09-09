@@ -221,8 +221,8 @@
   </Target>-->
   <Import Project="Fody.targets" />
   <PropertyGroup>
-    <PostBuildEvent>del /Q $(SolutionDir)MfaktXController-win.zip
-cd $(OutDir)
-"C:\Program Files\7-Zip\7z.exe" a $(SolutionDir)MfaktXController-win.zip MfaktXController.exe MfaktXController.exe.config SendCtrlCode.exe Microsoft.WindowsAPICodePack.dll</PostBuildEvent>
+    <PostBuildEvent>del /Q "$(SolutionDir)MfaktXController-win.zip"
+cd "$(OutDir)"
+"C:\Program Files\7-Zip\7z.exe" a "$(SolutionDir)MfaktXController-win.zip" MfaktXController.exe MfaktXController.exe.config SendCtrlCode.exe Microsoft.WindowsAPICodePack.dll</PostBuildEvent>
   </PropertyGroup>
 </Project>
