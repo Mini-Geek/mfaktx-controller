@@ -40,7 +40,7 @@ namespace MfaktXController
             }
         }
 
-        public static string IniFile(String identifier)
+        public static string IniFile(string identifier)
         {
             string keyName = string.Format("MfaktX{0}IniFileName", identifier);
             return ConfigurationManager.AppSettings[keyName];
