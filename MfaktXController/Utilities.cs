@@ -40,9 +40,9 @@ namespace MfaktXController
             }
         }
 
-        public static string IniFile(Speed? speed)
+        public static string IniFile(String identifier)
         {
-            string keyName = string.Format("MfaktX{0}IniFileName", speed.ToString());
+            string keyName = string.Format("MfaktX{0}IniFileName", identifier);
             return ConfigurationManager.AppSettings[keyName];
         }
 

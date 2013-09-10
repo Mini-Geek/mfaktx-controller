@@ -98,7 +98,7 @@ namespace MfaktXController
                 await Stop(manual);
             }
 
-            File.Copy(Utilities.IniFile(speed), Utilities.IniFile(null), true);
+            PrepareIniFile(speed);
 
             ValidateStartNewInstance();
             if (process != null)
@@ -129,6 +129,20 @@ namespace MfaktXController
             this.Status = MfaktXStatus.Running;
             this.CurrentSpeed = speed;
             this.SwitchingToSpeed = null;
+        }
+
+        private static void PrepareIniFile(Speed speed)
+        {
+            var speedFileLines = File.ReadLines(Utilities.IniFile(speed.ToString()));
+            using (var writer = File.CreateText(Utilities.IniFile("Target")))
+            {
+                string commonFile = Utilities.IniFile("Common");
+                if (!string.IsNullOrEmpty(commonFile))
+                    foreach (var line in File.ReadLines(commonFile))
+                        writer.WriteLine(line);
+                foreach (var line in speedFileLines)
+                    writer.WriteLine(line);
+            }
         }
 
         void process_ErrorDataReceived(object sender, DataReceivedEventArgs e)
