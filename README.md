@@ -5,7 +5,7 @@ Download binaries (Windows): <a href="https://github.com/Mini-Geek/mfaktx-contro
 http://www.mersenneforum.org/showthread.php?t=18088 has more details.
 
 Building instructions:
- - I used Visual Studio 2012 Express for Windows Desktop. Anything that supports building .NET 4.5 Windows Applications should work.
+ - I used Visual Studio Express 2013 for Windows Desktop. Anything that supports building .NET 4.5 Windows Applications should work.
  - Dependencies:
   - <a href="http://visualstudiogallery.msdn.microsoft.com/27077b70-9dad-4c64-adcf-c7cf6bc9970c">NuGet</a>, if not already installed
   - <a href="https://nuget.org/packages/Fody/">Fody</a> (NuGet should automatically get this when you build)
