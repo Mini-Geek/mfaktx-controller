@@ -1,6 +1,7 @@
 ﻿using Microsoft.WindowsAPICodePack.ApplicationServices;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Configuration;
 using System.IO;
 using System.Linq;
@@ -199,6 +200,11 @@ namespace MfaktXController
             if (string.IsNullOrEmpty(value))
                 return value;
             return value + suffix;
+        }
+
+        public static ObservableCollection<T> ToObservableCollection<T>(this IEnumerable<T> source)
+        {
+            return new ObservableCollection<T>(source);
         }
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]

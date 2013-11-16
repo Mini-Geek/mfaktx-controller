@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Configuration;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -27,6 +28,7 @@ namespace MfaktXController
         readonly ObservableCollection<string> processes = null;
         bool isSlow;
         bool isDirty;
+        ObservableCollection<ProcessSummary> summaries = new ObservableCollection<ProcessSummary>();
 
         public ManageProcessListWindow(bool isSlow)
         {
@@ -38,6 +40,7 @@ namespace MfaktXController
             this.ProcessDataGrid.ItemsSource = processes;
             this.Title = "Manage " + (isSlow ? "Slow" : "Pause") + " While Running List - MfaktX Controller";
             this.Closing += ManageProcessListWindow_Closing;
+            this.Refresh();
         }
 
         void ManageProcessListWindow_Closing(object sender, CancelEventArgs e)
@@ -85,24 +88,76 @@ namespace MfaktXController
         {
             var processName = (string)((FrameworkElement)sender).DataContext;
             processes.Remove(processName);
+            UpdateSummary(processName, false);
         }
 
-        private void AddButton_Click(object sender, RoutedEventArgs e)
+        private void ManualAddButton_Click(object sender, RoutedEventArgs e)
         {
             var processName = NewProcessTextBox.Text;
             if (!string.IsNullOrWhiteSpace(processName))
             {
                 processes.Add(processName);
                 NewProcessTextBox.Text = "";
+                UpdateSummary(processName, true);
             }
         }
 
-        private void ListButton_Click(object sender, RoutedEventArgs e)
+        private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
-            var listProcesses = new ListProcesses(processes);
-            listProcesses.ShowDialog();
-            if (!string.IsNullOrEmpty(listProcesses.SelectedProcess))
-                processes.Add(listProcesses.SelectedProcess);
+            this.Refresh();
+        }
+
+        private void Refresh()
+        {
+            var allProcesses = Process.GetProcesses();
+            summaries = allProcesses.Select(x => new ProcessSummary(x.ProcessName, x.PrivateMemorySize64, processes.Contains(x.ProcessName, StringComparer.OrdinalIgnoreCase))).ToObservableCollection();
+
+            ProcessesDataGrid.ItemsSource = summaries;
+            ICollectionView dataView = CollectionViewSource.GetDefaultView(ProcessesDataGrid.ItemsSource);
+            dataView.SortDescriptions.Clear();
+            dataView.SortDescriptions.Add(new SortDescription("MemoryMB", ListSortDirection.Descending));
+            dataView.Refresh();
+        }
+
+        private void AddProcessButton_Click(object sender, RoutedEventArgs e)
+        {
+            var summary = (ProcessSummary)((FrameworkElement)sender).DataContext;
+            processes.Add(summary.ProcessName);
+            UpdateSummary(summary.ProcessName, true);
+        }
+
+        void UpdateSummary(string processName, bool isSelected)
+        {
+            foreach (var summary in summaries.Where(x => string.Equals(x.ProcessName, processName, StringComparison.OrdinalIgnoreCase)))
+            {
+                summary.IsSelected = isSelected;
+            }
+        }
+    }
+
+    public class ProcessSummary : INotifyPropertyChanged
+    {
+#pragma warning disable 67
+        public event PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore 67
+
+        public bool IsSelected { get; set; }
+        public bool IsNotSelected { get { return !IsSelected; } }
+        public string ProcessName { get; private set; }
+        public long MemoryBytes { get; private set; }
+        public decimal MemoryMB
+        {
+            get
+            {
+                return (decimal)MemoryBytes / 1024 / 1024;
+            }
+        }
+
+        public ProcessSummary(string processName, long memoryBytes, bool isSelected)
+        {
+            this.ProcessName = processName;
+            this.MemoryBytes = memoryBytes;
+            this.IsSelected = isSelected;
         }
     }
 }
