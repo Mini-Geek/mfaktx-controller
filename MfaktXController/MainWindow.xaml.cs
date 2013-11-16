@@ -54,12 +54,9 @@ namespace MfaktXController
                 idleTimer.Start();
             }
 
-            if (Utilities.PauseOrSlowWhileRunning.Any())
-            {
-                var pauseSlowTimer = new Timer(Utilities.PauseSlowDetectionInterval);
-                pauseSlowTimer.Elapsed += pauseSlowTimer_Elapsed;
-                pauseSlowTimer.Start();
-            }
+            var pauseSlowTimer = new Timer(Utilities.PauseSlowDetectionInterval);
+            pauseSlowTimer.Elapsed += pauseSlowTimer_Elapsed;
+            pauseSlowTimer.Start();
 
             OutputTextBox.FontFamily = Utilities.OutputLogFontFamily;
         }
